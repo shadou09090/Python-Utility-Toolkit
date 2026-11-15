@@ -13,7 +13,9 @@ __pycache__/
 .vscode/
 
 # Archivos grandes que superan el límite de GitHub (100 MB)
+ciberseguridad/Desbloqueador_pdf_excel/Contraseñas/rockyou.txt
 Kit_herramientas/Desbloqueador_pdf_excel/Contraseñas/rockyou.txt
+**/Contraseñas/rockyou.txt
 *.tar.gz
 *.zip
 

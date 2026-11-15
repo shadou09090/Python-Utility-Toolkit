@@ -4,6 +4,19 @@ import io
 import base64
 import subprocess
 from pathlib import Path
+
+if os.name == "nt":
+    os.system("")
+
+CYAN = "\033[96m"
+VERDE = "\033[92m"
+AMARILLO = "\033[93m"
+ROJO = "\033[91m"
+MAGENTA = "\033[95m"
+AZUL = "\033[94m"
+BLANCO = "\033[97m"
+NEGRITA = "\033[1m"
+RESET = "\033[0m"
 try:
     from pypdf import PdfReader, PdfWriter
 except ImportError:
@@ -252,114 +265,129 @@ def run_streamlit_ui():
 def pedir_nivel_encriptacion() -> bool:
     """Solicita al usuario elegir entre Normal, Fuerte o ver la Explicación."""
     while True:
-        print("\nSelecciona el nivel de encriptación:")
-        print("  [1] Normal (AES-256 Estándar - R5, compatible y acelerable por GPU)")
-        print("  [2] Fuerte (AES-256 Hardened - R6, blindaje militar anti-fuerza bruta)")
-        print("  [3] Ver explicación detallada de cada opción")
+        print(f"\n{CYAN}{NEGRITA}╔══ SELECCIÓN DE NIVEL DE ENCRIPTACIÓN ══{RESET}")
+        print(f"  {VERDE}[1]{RESET} {BLANCO}Normal (AES-256 R5 - Compatible y acelerable por GPU){RESET}")
+        print(f"  {AMARILLO}[2]{RESET} {BLANCO}Fuerte (AES-256 Hardened R6 - Blindaje anti-fuerza bruta){RESET}")
+        print(f"  {MAGENTA}[3]{RESET} {BLANCO}Ver explicación técnica detallada de cada nivel{RESET}")
+        print(f"{CYAN}{'═' * 45}{RESET}")
 
-        op = input("\nElige una opción (1/2/3): ").strip()
+        op = input(f"{VERDE}{NEGRITA}Elige una opción (1/2/3): {RESET}").strip()
         if op == "1":
             return False  # Normal
         elif op == "2":
             return True   # Fuerte
         elif op == "3":
             print(EXPLICACION_NIVELES)
-            input("Presiona Enter para continuar y seleccionar tu nivel...")
+            input(f"{BLANCO}Presiona Enter para continuar y seleccionar tu nivel...{RESET}")
         else:
-            print("[!] Opción no válida. Escribe 1, 2 o 3.")
+            print(f"{ROJO}[!] Opción no válida. Escribe 1, 2 o 3.{RESET}")
 
 
 def run_cli_menu():
-    print("==================================================")
-    print("   ENCRIPTADOR DE ARCHIVOS (PDF / EXCEL / CSV)    ")
-    print("==================================================")
-    print(f"Directorio del script: {BASE_DIR}")
-    print("\nSelecciona una opción:")
-    print("  1. Elegir un archivo de la misma carpeta")
-    print("  2. Ingresar la ruta manual de un archivo")
-    print("  3. Explicación de los niveles de encriptación (Normal vs Fuerte)")
-    print("  4. Abrir interfaz interactiva en Streamlit")
-    print("  0. Salir")
+    while True:
+        print(f"\n{AZUL}{NEGRITA}╔════════════════════════════════════════════════════════════════════════════════════╗{RESET}")
+        print(f"{AZUL}{NEGRITA}║                   🔒 ENCRIPTADOR DE ARCHIVOS (PDF / EXCEL / CSV)                   ║{RESET}")
+        print(f"{AZUL}{NEGRITA}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}")
+        print(f"  {CYAN}📁 Carpeta actual:{RESET} {BASE_DIR}")
+        print(f"  {CYAN}📂 Destino cifrado:{RESET} {OUTPUT_DIR}")
+        print(f"{AZUL}╠════════════════════════════════════════════════════════════════════════════════════╣{RESET}")
+        print(f"║  {VERDE}[1]{RESET} {BLANCO}📁 Encriptar archivo(s) de la carpeta del script{RESET}                          ║")
+        print(f"║  {VERDE}[2]{RESET} {BLANCO}📝 Encriptar archivo ingresando ruta manual{RESET}                               ║")
+        print(f"║  {CYAN}[3]{RESET} {BLANCO}📖 Explicación técnica de niveles (Normal vs Blindaje Fuerte){RESET}           ║")
+        print(f"║  {MAGENTA}[4]{RESET} {BLANCO}🌐 Iniciar Interfaz Gráfica Web (Streamlit){RESET}                                  ║")
+        print(f"║  {ROJO}[0]{RESET} {BLANCO}🚪 Salir del programa{RESET}                                                       ║")
+        print(f"{AZUL}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}\n")
 
-    opcion = input("\nOpción (0/1/2/3/4): ").strip()
+        opcion = input(f"{VERDE}{NEGRITA}Seleccione una opción (0-4): {RESET}").strip()
 
-    if opcion == "0":
-        print("\nHasta luego.")
-        return
-
-    elif opcion == "1":
-        archivos = get_local_files()
-        if not archivos:
-            print(f"\n[!] No se encontraron archivos {SUPPORTED_EXTS} en {BASE_DIR}")
+        if opcion == "0":
+            print(f"\n{CYAN}Hasta luego.{RESET}\n")
             return
 
-        print("\nArchivos detectados en la carpeta del script:")
-        for idx, f in enumerate(archivos, 1):
-            print(f"  [{idx}] {f.name}")
-        print("  [0] Encriptar TODOS los de la lista")
+        elif opcion == "1":
+            archivos = get_local_files()
+            if not archivos:
+                print(f"\n{AMARILLO}[!] No se encontraron archivos {SUPPORTED_EXTS} en {BASE_DIR}{RESET}")
+                input(f"\n{BLANCO}Presione Enter para continuar...{RESET}")
+                continue
 
-        sel = input("\nElige el número del archivo: ").strip()
-        try:
-            idx_sel = int(sel)
-            if idx_sel == 0:
-                seleccionados = archivos
-            elif 1 <= idx_sel <= len(archivos):
-                seleccionados = [archivos[idx_sel - 1]]
-            else:
-                print("[ERROR] Número fuera de rango.")
-                return
-        except ValueError:
-            print("[ERROR] Entrada inválida.")
-            return
+            print(f"\n{CYAN}Archivos detectados en la carpeta del script:{RESET}")
+            for idx, f in enumerate(archivos, 1):
+                print(f"  {VERDE}[{idx}]{RESET} {BLANCO}{f.name}{RESET}")
+            print(f"  {AMARILLO}[0]{RESET} {BLANCO}Encriptar TODOS los de la lista{RESET}")
 
-        clave = input("\n¿Cuál quieres que sea la clave?: ").strip()
-        if not clave:
-            print("[ERROR] La clave no puede estar vacía.")
-            return
-
-        fuerte = pedir_nivel_encriptacion()
-        nivel_nombre = "FUERTE (Anti-GPU)" if fuerte else "NORMAL (GPU-Friendly)"
-
-        for f in seleccionados:
+            sel = input(f"\n{VERDE}Elige el número del archivo (o Enter para cancelar): {RESET}").strip()
+            if not sel:
+                continue
             try:
-                dest = encrypt_bytes(f.read_bytes(), f.name, clave, fuerte=fuerte)
-                print(f"[OK] '{f.name}' [{nivel_nombre}] -> Guardado en: {dest}")
+                idx_sel = int(sel)
+                if idx_sel == 0:
+                    seleccionados = archivos
+                elif 1 <= idx_sel <= len(archivos):
+                    seleccionados = [archivos[idx_sel - 1]]
+                else:
+                    print(f"{ROJO}[ERROR] Número fuera de rango.{RESET}")
+                    input(f"\n{BLANCO}Presione Enter para continuar...{RESET}")
+                    continue
+            except ValueError:
+                print(f"{ROJO}[ERROR] Entrada inválida.{RESET}")
+                input(f"\n{BLANCO}Presione Enter para continuar...{RESET}")
+                continue
+
+            clave = input(f"\n{CYAN}¿Cuál quieres que sea la clave?: {RESET}").strip()
+            if not clave:
+                print(f"{ROJO}[ERROR] La clave no puede estar vacía.{RESET}")
+                input(f"\n{BLANCO}Presione Enter para continuar...{RESET}")
+                continue
+
+            fuerte = pedir_nivel_encriptacion()
+            nivel_nombre = "FUERTE (Anti-GPU)" if fuerte else "NORMAL (GPU-Friendly)"
+
+            for f in seleccionados:
+                try:
+                    dest = encrypt_bytes(f.read_bytes(), f.name, clave, fuerte=fuerte)
+                    print(f"\n{VERDE}✓ [OK] '{f.name}' [{nivel_nombre}] -> Guardado en:{RESET}\n    {dest}")
+                except Exception as e:
+                    print(f"\n{ROJO}❌ [ERROR] Falló '{f.name}': {e}{RESET}")
+            input(f"\n{BLANCO}Presione Enter para continuar...{RESET}")
+
+        elif opcion == "2":
+            ruta_raw = input(f"\n{CYAN}Ingresa la ruta del archivo: {RESET}").strip().strip("\"'")
+            if not ruta_raw:
+                continue
+            archivo = Path(ruta_raw).expanduser().resolve()
+
+            if not archivo.is_file():
+                print(f"\n{ROJO}[ERROR] No existe el archivo: {archivo}{RESET}")
+                input(f"\n{BLANCO}Presione Enter para continuar...{RESET}")
+                continue
+
+            clave = input(f"\n{CYAN}¿Cuál quieres que sea la clave?: {RESET}").strip()
+            if not clave:
+                print(f"{ROJO}[ERROR] La clave no puede estar vacía.{RESET}")
+                input(f"\n{BLANCO}Presione Enter para continuar...{RESET}")
+                continue
+
+            fuerte = pedir_nivel_encriptacion()
+            nivel_nombre = "FUERTE (Anti-GPU)" if fuerte else "NORMAL (GPU-Friendly)"
+
+            try:
+                dest = encrypt_bytes(archivo.read_bytes(), archivo.name, clave, fuerte=fuerte)
+                print(f"\n{VERDE}✓ [OK] '{archivo.name}' [{nivel_nombre}] -> Guardado en:{RESET}\n    {dest}")
             except Exception as e:
-                print(f"[ERROR] Falló '{f.name}': {e}")
+                print(f"\n{ROJO}[ERROR] Falló la encriptación: {e}{RESET}")
+            input(f"\n{BLANCO}Presione Enter para continuar...{RESET}")
 
-    elif opcion == "2":
-        ruta_raw = input("\nIngresa la ruta del archivo: ").strip().strip("\"'")
-        archivo = Path(ruta_raw).expanduser().resolve()
+        elif opcion == "3":
+            print(EXPLICACION_NIVELES)
+            input(f"\n{BLANCO}Presiona Enter para volver al menú principal...{RESET}")
 
-        if not archivo.is_file():
-            print(f"[ERROR] No existe el archivo: {archivo}")
-            return
+        elif opcion == "4":
+            print(f"\n{CYAN}[*] Levantando servidor Streamlit...{RESET}")
+            subprocess.run([sys.executable, "-m", "streamlit", "run", str(Path(__file__).resolve())])
 
-        clave = input("\n¿Cuál quieres que sea la clave?: ").strip()
-        if not clave:
-            print("[ERROR] La clave no puede estar vacía.")
-            return
-
-        fuerte = pedir_nivel_encriptacion()
-        nivel_nombre = "FUERTE (Anti-GPU)" if fuerte else "NORMAL (GPU-Friendly)"
-
-        try:
-            dest = encrypt_bytes(archivo.read_bytes(), archivo.name, clave, fuerte=fuerte)
-            print(f"[OK] '{archivo.name}' [{nivel_nombre}] -> Guardado en: {dest}")
-        except Exception as e:
-            print(f"[ERROR] Falló la encriptación: {e}")
-
-    elif opcion == "3":
-        print(EXPLICACION_NIVELES)
-        input("Presiona Enter para volver al menú principal...")
-        run_cli_menu()
-
-    elif opcion == "4":
-        print("\n[*] Levantando servidor Streamlit...")
-        subprocess.run([sys.executable, "-m", "streamlit", "run", str(Path(__file__).resolve())])
-
-    else:
-        print("[ERROR] Opción no válida.")
+        else:
+            print(f"\n{ROJO}[ERROR] Opción no válida.{RESET}")
 
 
 def is_running_in_streamlit() -> bool:

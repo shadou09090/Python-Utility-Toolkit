@@ -4,9 +4,31 @@ import io
 import time
 import zipfile
 import subprocess
-import pymupdf as fitz
-from PIL import Image
-from rembg import remove, new_session
+try:
+    import pymupdf as fitz
+except ImportError:
+    fitz = None
+try:
+    from PIL import Image
+except ImportError:
+    Image = None
+try:
+    from rembg import remove, new_session
+except ImportError:
+    remove, new_session = None, None
+
+if os.name == "nt":
+    os.system("")
+
+CYAN = "\033[96m"
+VERDE = "\033[92m"
+AMARILLO = "\033[93m"
+ROJO = "\033[91m"
+MAGENTA = "\033[95m"
+AZUL = "\033[94m"
+BLANCO = "\033[97m"
+NEGRITA = "\033[1m"
+RESET = "\033[0m"
 
 CARPETA_SALIDA = "new images"
 SESION_REMBG = None
@@ -145,16 +167,16 @@ def mostrar_resultado(ruta_orig, ruta_nueva, tiempo_seg):
     peso_nuevo = os.path.getsize(ruta_nueva)
     ahorro = ((peso_orig - peso_nuevo) / peso_orig) * 100 if peso_orig > 0 else 0
 
-    print("\n" + "-" * 55)
-    print(f"Tiempo de proceso: {tiempo_seg:.2f} segundos")
-    print(f"Archivo original : {obtener_tamano_legible(peso_orig)}")
-    print(f"Archivo nuevo    : {obtener_tamano_legible(peso_nuevo)}")
+    print(f"\n{AZUL}{'─' * 70}{RESET}")
+    print(f"  {VERDE}{NEGRITA}✓ Proceso completado exitosamente en {tiempo_seg:.2f} segundos{RESET}")
+    print(f"  {CYAN}📄 Original  :{RESET} {BLANCO}{obtener_tamano_legible(peso_orig)}{RESET}")
+    print(f"  {CYAN}✨ Optimizado:{RESET} {VERDE}{obtener_tamano_legible(peso_nuevo)}{RESET}")
     if ahorro > 0:
-        print(f"Reduccion lograda: {ahorro:.1f}%")
+        print(f"  {AMARILLO}📉 Reducción :{RESET} {VERDE}{NEGRITA}{ahorro:.1f}% de espacio ahorrado{RESET}")
     else:
-        print("Nota             : Guardado en 'new images' sin reduccion adicional.")
-    print(f"Guardado en      : {ruta_nueva}")
-    print("-" * 55)
+        print(f"  {AMARILLO}ℹ️  Nota      :{RESET} Guardado en '{CARPETA_SALIDA}' sin reducción adicional.")
+    print(f"  {CYAN}📁 Destino   :{RESET} {ruta_nueva}")
+    print(f"{AZUL}{'─' * 70}{RESET}")
 
 
 def procesar_individual_cli(tipo):
@@ -513,35 +535,37 @@ def menu():
     asegurar_carpeta()
     while True:
         limpiar_pantalla()
-        print("=======================================================")
-        print("          OPTIMIZADOR DE PDFs E IMAGENES               ")
-        print(f"      Carpeta de salida: ./{CARPETA_SALIDA}/            ")
-        print("=======================================================")
-        print("  [1] Comprimir un archivo PDF")
-        print("  [2] Comprimir una Imagen (JPG, PNG, WEBP)")
-        print("  [3] Quitar el fondo de una Imagen (Modo Turbo)")
-        print("  [4] Comprimir carpeta completa por lotes")
-        print("  [5] Abrir interfaz grafica interactiva (Streamlit)")
-        print("  [6] Salir")
-        print("=======================================================")
+        print(f"\n{AZUL}{NEGRITA}╔════════════════════════════════════════════════════════════════════════════════════╗{RESET}")
+        print(f"{AZUL}{NEGRITA}║         🖼️  OPTIMIZADOR DE PDFs, IMÁGENES Y RECORTE DE FONDOS POR IA               ║{RESET}")
+        print(f"{AZUL}{NEGRITA}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}")
+        print(f"  {CYAN}📁 Carpeta de salida:{RESET} ./{CARPETA_SALIDA}/")
+        print(f"{AZUL}╠════════════════════════════════════════════════════════════════════════════════════╣{RESET}")
+        print(f"║  {VERDE}[1]{RESET} {BLANCO}📄 Comprimir un archivo PDF{RESET}                                            ║")
+        print(f"║  {VERDE}[2]{RESET} {BLANCO}🖼️  Comprimir una Imagen (JPG, PNG, WEBP){RESET}                                ║")
+        print(f"║  {MAGENTA}[3]{RESET} {BLANCO}✂️  Quitar el fondo de una Imagen con IA (Modo Turbo){RESET}                   ║")
+        print(f"║  {CYAN}[4]{RESET} {BLANCO}📦 Comprimir carpeta completa por lotes{RESET}                                  ║")
+        print(f"║  {MAGENTA}[5]{RESET} {BLANCO}🌐 Iniciar Interfaz Gráfica Web (Streamlit){RESET}                          ║")
+        print(f"║  {ROJO}[0]{RESET} {BLANCO}🚪 Salir del programa (o presione 6){RESET}                                  ║")
+        print(f"{AZUL}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}\n")
 
-        opcion = input("Seleccione una opcion (1-6): ").strip()
+        opcion = input(f"{VERDE}{NEGRITA}Seleccione una opción (0-5): {RESET}").strip()
 
         if opcion == "1":
             procesar_individual_cli("pdf")
-            input("\nPresione Enter para continuar...")
+            input(f"\n{BLANCO}Presione Enter para continuar...{RESET}")
         elif opcion == "2":
             procesar_individual_cli("img")
-            input("\nPresione Enter para continuar...")
+            input(f"\n{BLANCO}Presione Enter para continuar...{RESET}")
         elif opcion == "3":
             procesar_individual_cli("nobg")
-            input("\nPresione Enter para continuar...")
+            input(f"\n{BLANCO}Presione Enter para continuar...{RESET}")
         elif opcion == "4":
             procesar_lote_cli()
-            input("\nPresione Enter para continuar...")
+            input(f"\n{BLANCO}Presione Enter para continuar...{RESET}")
         elif opcion == "5":
             lanzar_streamlit()
-        elif opcion == "6":
+        elif opcion in ("6", "0", "q", "exit", "salir"):
+            print(f"\n{CYAN}Saliendo del optimizador. ¡Hasta luego!{RESET}\n")
             sys.exit(0)
 
 

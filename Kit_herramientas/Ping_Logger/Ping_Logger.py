@@ -19,6 +19,19 @@ from datetime import datetime, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from collections import defaultdict
 
+if os.name == "nt":
+    os.system("")
+
+CYAN = "\033[96m"
+VERDE = "\033[92m"
+AMARILLO = "\033[93m"
+ROJO = "\033[91m"
+MAGENTA = "\033[95m"
+AZUL = "\033[94m"
+BLANCO = "\033[97m"
+NEGRITA = "\033[1m"
+RESET = "\033[0m"
+
 # ==============================================================================
 # Constantes y rutas
 # ==============================================================================
@@ -45,10 +58,11 @@ def pausa():
 def mostrar_encabezado(titulo: str):
     """Muestra un encabezado formateado."""
     limpiar_pantalla()
-    print(SEPARADOR)
-    print(f"  PING LOGGER - {titulo}")
-    print(SEPARADOR)
-    print()
+    print(f"\n{AZUL}{NEGRITA}╔════════════════════════════════════════════════════════════════════════════════════╗{RESET}")
+    print(f"{AZUL}{NEGRITA}║         📶 PING LOGGER - MONITOR DE LATENCIA Y MICROCORTES DE RED                  ║{RESET}")
+    print(f"{AZUL}{NEGRITA}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}")
+    print(f"  {CYAN}📍 Módulo activo:{RESET} {VERDE}{titulo}{RESET} | {CYAN}📁 Registros:{RESET} ./registros/")
+    print(f"{AZUL}╠════════════════════════════════════════════════════════════════════════════════════╣{RESET}")
 
 
 def crear_directorios():
@@ -1075,21 +1089,21 @@ def menu_principal():
     crear_directorios()
 
     while True:
-        mostrar_encabezado("Menu Principal")
+        mostrar_encabezado("Menú Principal de Diagnóstico")
 
-        print("  1. Monitoreo continuo de un solo host")
-        print("  2. Prueba rapida de conectividad")
-        print("  3. Monitorear multiples hosts simultaneamente")
-        print("  4. Deteccion de microcortes")
-        print("  5. Ver estadisticas de un registro CSV")
-        print("  6. Generar reporte de disponibilidad")
-        print("  7. Traceroute a un host")
-        print("  8. Resolver DNS de un dominio")
-        print("  9. Interfaz interactiva (Web)")
-        print("  0. Salir")
-        print()
+        print(f"║  {VERDE}[ 1]{RESET} {BLANCO}📊 Monitoreo continuo de un solo host (con registro a CSV){RESET}             ║")
+        print(f"║  {VERDE}[ 2]{RESET} {BLANCO}⚡ Prueba rápida de conectividad y latencia{RESET}                                 ║")
+        print(f"║  {VERDE}[ 3]{RESET} {BLANCO}🌐 Monitorear múltiples hosts simultáneamente{RESET}                             ║")
+        print(f"║  {CYAN}[ 4]{RESET} {BLANCO}🔍 Detección automática de microcortes e inestabilidad de enlace{RESET}        ║")
+        print(f"║  {AMARILLO}[ 5]{RESET} {BLANCO}📈 Ver estadísticas de un registro CSV guardado{RESET}                          ║")
+        print(f"║  {AMARILLO}[ 6]{RESET} {BLANCO}📑 Generar reporte estructurado de disponibilidad (SLA){RESET}                  ║")
+        print(f"║  {CYAN}[ 7]{RESET} {BLANCO}🛣️  Traceroute y diagnóstico de ruta de saltos de red{RESET}                    ║")
+        print(f"║  {CYAN}[ 8]{RESET} {BLANCO}🔍 Resolver registros DNS de un dominio{RESET}                                  ║")
+        print(f"║  {MAGENTA}[ 9]{RESET} {BLANCO}🌐 Iniciar Interfaz Gráfica Web (Streamlit){RESET}                                  ║")
+        print(f"║  {ROJO}[ 0]{RESET} {BLANCO}🚪 Salir del programa{RESET}                                                       ║")
+        print(f"{AZUL}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}\n")
 
-        opcion = input("[+] Selecciona una opcion: ").strip()
+        opcion = input(f"  {VERDE}{NEGRITA}Seleccione una opción (0-9): {RESET}").strip()
 
         if opcion == "1":
             monitoreo_continuo()

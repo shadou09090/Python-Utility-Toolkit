@@ -20,6 +20,19 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterator, List, Optional, Tuple, Union
 
+if os.name == "nt":
+    os.system("")
+
+CYAN = "\033[96m"
+VERDE = "\033[92m"
+AMARILLO = "\033[93m"
+ROJO = "\033[91m"
+MAGENTA = "\033[95m"
+AZUL = "\033[94m"
+BLANCO = "\033[97m"
+NEGRITA = "\033[1m"
+RESET = "\033[0m"
+
 
 # =====================================================================
 # RUTAS Y EXTENSIONES
@@ -1318,24 +1331,25 @@ def show_history() -> None:
 def interactive_menu() -> None:
     ensure_directories()
     while True:
-        gpu_status = f"{GLOBAL_GPU.device_name} (ACTIVA)" if GLOBAL_GPU.available else "No disponible"
-        print(
-            f"\n{'='*55}\n"
-            f"  DESBLOQUEADOR ULTRA RÁPIDO (GPU & CPU)\n"
-            f"  ⚡ GPU : {gpu_status}\n"
-            f"  🧠 CPU : {os.cpu_count() or 4} hilos de procesamiento\n"
-            f"{'='*55}\n"
-            "1. Desbloquear con contraseña conocida\n"
-            "2. Probar contraseñas desde un TXT y desbloquear\n"
-            "3. Añadir un TXT a la carpeta Contraseñas\n"
-            "4. Test de velocidad de hardware (Benchmark GPU vs CPU)\n"
-            "5. Ver historial (con contraseñas visibles)\n"
-            "6. Abrir interfaz interactiva Web (Streamlit)\n"
-            "7. Probar contraseñas numéricas (0 a 999,999,999)\n"
-            "8. Descargar lista de contraseñas (rockyou.txt)\n"
-            "9. Salir"
-        )
-        option = input("Elige una opción: ").strip()
+        gpu_status = f"{VERDE}{GLOBAL_GPU.device_name} (ACTIVA){RESET}" if GLOBAL_GPU.available else f"{AMARILLO}No disponible / Modo CPU{RESET}"
+        print(f"\n{AZUL}{NEGRITA}╔════════════════════════════════════════════════════════════════════════════════════╗{RESET}")
+        print(f"{AZUL}{NEGRITA}║         🔓 DESBLOQUEADOR ULTRA RÁPIDO DE PDF Y EXCEL (GPU OPENCL & CPU)            ║{RESET}")
+        print(f"{AZUL}{NEGRITA}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}")
+        print(f"  {CYAN}⚡ GPU:{RESET} {gpu_status} | {CYAN}🧠 CPU:{RESET} {VERDE}{os.cpu_count() or 4} hilos{RESET}")
+        print(f"  {CYAN}📁 Entrada:{RESET} {INPUT_DIR.name}/ | {CYAN}📂 Salida:{RESET} {OUTPUT_DIR.name}/")
+        print(f"{AZUL}╠════════════════════════════════════════════════════════════════════════════════════╣{RESET}")
+        print(f"║  {VERDE}[1]{RESET} {BLANCO}🔑 Desbloquear con contraseña conocida{RESET}                               ║")
+        print(f"║  {VERDE}[2]{RESET} {BLANCO}📜 Probar contraseñas desde un TXT y desbloquear{RESET}                       ║")
+        print(f"║  {CYAN}[3]{RESET} {BLANCO}➕ Añadir un nuevo TXT a la carpeta Contraseñas{RESET}                         ║")
+        print(f"║  {MAGENTA}[4]{RESET} {BLANCO}⚡ Benchmark de velocidad de hardware (GPU vs CPU){RESET}                    ║")
+        print(f"║  {CYAN}[5]{RESET} {BLANCO}📜 Ver historial de desbloqueos (con contraseñas visibles){RESET}            ║")
+        print(f"║  {MAGENTA}[6]{RESET} {BLANCO}🌐 Iniciar Interfaz Gráfica Web (Streamlit){RESET}                          ║")
+        print(f"║  {VERDE}[7]{RESET} {BLANCO}🔢 Probar contraseñas numéricas (Fuerza bruta PIN / dígitos){RESET}           ║")
+        print(f"║  {CYAN}[8]{RESET} {BLANCO}📥 Descargar diccionario mundial rockyou.txt{RESET}                           ║")
+        print(f"║  {ROJO}[0]{RESET} {BLANCO}🚪 Salir del programa (o presione 9){RESET}                                  ║")
+        print(f"{AZUL}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}\n")
+
+        option = input(f"{VERDE}{NEGRITA}Seleccione una opción (0-8): {RESET}").strip()
         if option == "1":
             unlock_interactive()
         elif option == "2":
@@ -1347,17 +1361,17 @@ def interactive_menu() -> None:
         elif option == "5":
             show_history()
         elif option == "6":
-            print("\n[*] Levantando servidor Streamlit...")
+            print(f"\n{CYAN}[*] Levantando servidor Streamlit...{RESET}")
             subprocess.run([sys.executable, "-m", "streamlit", "run", str(Path(__file__).resolve())])
         elif option == "7":
             Numbers()
         elif option == "8":
             descargar_rockyou()
-        elif option == "9":
-            print("Hasta luego.")
+        elif option in ("9", "0", "q", "exit", "salir"):
+            print(f"\n{CYAN}Hasta luego.{RESET}\n")
             return
         else:
-            print("Opción no válida.")
+            print(f"\n{ROJO}Opción no válida.{RESET}")
 
 
 # =====================================================================

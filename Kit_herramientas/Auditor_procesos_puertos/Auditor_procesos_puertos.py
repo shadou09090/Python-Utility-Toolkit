@@ -18,6 +18,19 @@ import datetime
 import subprocess
 from pathlib import Path
 
+if os.name == "nt":
+    os.system("")
+
+CYAN = "\033[96m"
+VERDE = "\033[92m"
+AMARILLO = "\033[93m"
+ROJO = "\033[91m"
+MAGENTA = "\033[95m"
+AZUL = "\033[94m"
+BLANCO = "\033[97m"
+NEGRITA = "\033[1m"
+RESET = "\033[0m"
+
 try:
     import psutil
 except ImportError:
@@ -837,27 +850,25 @@ def menu_principal():
     """Menu principal del programa."""
     while True:
         limpiar_pantalla()
-        print("""
- ============================================================
-       AUDITOR DE PROCESOS Y PUERTOS
- ============================================================
+        print(f"\n{AZUL}{NEGRITA}╔════════════════════════════════════════════════════════════════════════════════════╗{RESET}")
+        print(f"{AZUL}{NEGRITA}║                   🔍 AUDITOR DE PROCESOS Y PUERTOS LOCALES                         ║{RESET}")
+        print(f"{AZUL}{NEGRITA}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}")
+        print(f"{AZUL}╠════════════════════════════════════════════════════════════════════════════════════╣{RESET}")
+        print(f"║  {VERDE}[ 1]{RESET} {BLANCO}🌐 Listar todos los puertos en uso y sus procesos{RESET}                            ║")
+        print(f"║  {VERDE}[ 2]{RESET} {BLANCO}🎯 Consultar un puerto específico (ver qué PID lo usa){RESET}                       ║")
+        print(f"║  {VERDE}[ 3]{RESET} {BLANCO}⚡ Escaneo rápido de puertos de desarrollo (3000, 8080, etc.){RESET}                ║")
+        print(f"║  {CYAN}[ 4]{RESET} {BLANCO}🔍 Buscar conexiones por nombre de proceso (ej. python, node){RESET}             ║")
+        print(f"║  {AMARILLO}[ 5]{RESET} {BLANCO}🧠 Top 15 procesos por consumo de Memoria RAM{RESET}                               ║")
+        print(f"║  {AMARILLO}[ 6]{RESET} {BLANCO}⚡ Top 15 procesos por consumo de Procesador CPU{RESET}                             ║")
+        print(f"║  {ROJO}[ 7]{RESET} {BLANCO}🛑 Finalizar proceso por PID (Kill Process){RESET}                                ║")
+        print(f"║  {ROJO}[ 8]{RESET} {BLANCO}🔓 Liberar un puerto ocupado matando su proceso asociado{RESET}                    ║")
+        print(f"║  {CYAN}[ 9]{RESET} {BLANCO}🛡️  Modo vigilante (Monitoreo continuo en tiempo real){RESET}                        ║")
+        print(f"║  {VERDE}[10]{RESET} {BLANCO}💾 Exportar reporte completo de auditoría a JSON{RESET}                             ║")
+        print(f"║  {MAGENTA}[11]{RESET} {BLANCO}🌐 Iniciar Interfaz Gráfica Web (Streamlit){RESET}                                  ║")
+        print(f"║  {ROJO}[ 0]{RESET} {BLANCO}🚪 Salir del programa{RESET}                                                       ║")
+        print(f"{AZUL}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}\n")
 
-   [1]  Listar todos los puertos en uso
-   [2]  Consultar un puerto especifico
-   [3]  Escaneo rapido de puertos de desarrollo
-   [4]  Buscar puertos por nombre de proceso
-   [5]  Top 15 procesos por consumo de RAM
-   [6]  Top 15 procesos por consumo de CPU
-   [7]  Matar proceso por PID
-   [8]  Liberar un puerto ocupado
-   [9]  Modo vigilante (monitoreo en tiempo real)
-  [10]  Exportar reporte completo a JSON
-  [11]  Interfaz interactiva (Web)
-   [0]  Salir
-
- ============================================================
-""")
-        opcion = input("  [?] Selecciona una opcion: ").strip()
+        opcion = input(f"  {VERDE}{NEGRITA}Seleccione una opción (0-11): {RESET}").strip()
 
         opciones = {
             "1": listar_puertos,

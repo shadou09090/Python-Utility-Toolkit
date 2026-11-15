@@ -7,6 +7,19 @@ import subprocess
 from pathlib import Path
 from datetime import datetime
 
+if os.name == "nt":
+    os.system("")
+
+CYAN = "\033[96m"
+VERDE = "\033[92m"
+AMARILLO = "\033[93m"
+ROJO = "\033[91m"
+MAGENTA = "\033[95m"
+AZUL = "\033[94m"
+BLANCO = "\033[97m"
+NEGRITA = "\033[1m"
+RESET = "\033[0m"
+
 CATEGORIES = {
     "Documentos": {".pdf", ".docx", ".doc", ".txt", ".xlsx", ".xls", ".pptx", ".ppt", ".csv", ".tex", ".md", ".epub"},
     "Imagenes": {".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp", ".bmp", ".ico", ".tiff"},
@@ -164,13 +177,13 @@ def clear_screen():
 
 
 def print_header(current_dir: Path, history_count: int, pending_count: int):
-    print("=" * 66)
-    print("            ORGANIZADOR INTELIGENTE DE DIRECTORIOS            ")
-    print("=" * 66)
-    print(f"  Ruta activa         : {current_dir}")
-    print(f"  Archivos sin ordenar: {pending_count}")
-    print(f"  Lotes para deshacer : {history_count}")
-    print("=" * 66)
+    print(f"{AZUL}{NEGRITA}╔════════════════════════════════════════════════════════════════════════════════════╗{RESET}")
+    print(f"{AZUL}{NEGRITA}║                   🗂️  ORGANIZADOR INTELIGENTE DE DIRECTORIOS                       ║{RESET}")
+    print(f"{AZUL}{NEGRITA}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}")
+    print(f"  {CYAN}📍 Ruta activa         :{RESET} {VERDE}{current_dir}{RESET}")
+    print(f"  {CYAN}📄 Archivos sin ordenar:{RESET} {AMARILLO if pending_count else VERDE}{pending_count} pendientes{RESET}")
+    print(f"  {CYAN}📜 Lotes para deshacer :{RESET} {BLANCO}{history_count} en historial{RESET}")
+    print(f"{AZUL}╠════════════════════════════════════════════════════════════════════════════════════╣{RESET}")
 
 
 def select_custom_path(current_dir: Path) -> Path:
@@ -353,17 +366,17 @@ def run_cli():
         pending = organizer.scan_files()
         clear_screen()
         print_header(organizer.target_dir, len(organizer.history), len(pending))
-        print("  [1] Organizar directorio ahora")
-        print("  [2] Simular organización (Vista previa sin mover archivos)")
-        print("  [3] Modo Centinela (Monitoreo automático en tiempo real)")
-        print("  [4] Deshacer la última organización")
-        print("  [5] Elegir o escribir la ruta que quieras organizar")
-        print("  [6] Abrir interfaz gráfica interactiva (Streamlit Web UI)")
-        print("  [7] Ver categorías y extensiones configuradas")
-        print("  [0] Salir")
-        print("-" * 66)
+        print(f"║  {VERDE}[1]{RESET} {BLANCO}🗂️  Organizar directorio ahora{RESET}                                          ║")
+        print(f"║  {CYAN}[2]{RESET} {BLANCO}🔍 Simular organización (Vista previa sin mover archivos){RESET}             ║")
+        print(f"║  {MAGENTA}[3]{RESET} {BLANCO}🛡️  Modo Centinela (Monitoreo automático en tiempo real){RESET}                 ║")
+        print(f"║  {AMARILLO}[4]{RESET} {BLANCO}↩️  Deshacer la última organización{RESET}                                    ║")
+        print(f"║  {CYAN}[5]{RESET} {BLANCO}📂 Elegir o escribir la ruta a organizar{RESET}                               ║")
+        print(f"║  {MAGENTA}[6]{RESET} {BLANCO}🌐 Abrir interfaz gráfica interactiva (Streamlit Web UI){RESET}               ║")
+        print(f"║  {BLANCO}[7]{RESET} {BLANCO}📋 Ver categorías y extensiones configuradas{RESET}                           ║")
+        print(f"║  {ROJO}[0]{RESET} {BLANCO}🚪 Salir del programa{RESET}                                                 ║")
+        print(f"{AZUL}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}\n")
 
-        choice = input("  Selecciona una opción: ").strip()
+        choice = input(f"  {VERDE}{NEGRITA}Seleccione una opción (0-7): {RESET}").strip()
 
         if choice == "1":
             logs, summary = organizer.organize(dry_run=False)

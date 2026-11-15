@@ -23,6 +23,19 @@ import subprocess
 from pathlib import Path
 from datetime import datetime
 
+if os.name == "nt":
+    os.system("")
+
+CYAN = "\033[96m"
+VERDE = "\033[92m"
+AMARILLO = "\033[93m"
+ROJO = "\033[91m"
+MAGENTA = "\033[95m"
+AZUL = "\033[94m"
+BLANCO = "\033[97m"
+NEGRITA = "\033[1m"
+RESET = "\033[0m"
+
 # ---------------------------------------------------------------------------
 # Rutas base
 # ---------------------------------------------------------------------------
@@ -57,12 +70,11 @@ def pausar():
 
 
 def mostrar_banner():
-    print(r"""
-    ============================================================
-        RESPALDOS INCREMENTALES
-        Copias de seguridad inteligentes
-    ============================================================
-    """)
+    print(f"\n{AZUL}{NEGRITA}╔════════════════════════════════════════════════════════════════════════════════════╗{RESET}")
+    print(f"{AZUL}{NEGRITA}║                   💾 AUTOMATIZADOR DE RESPALDOS INCREMENTALES                      ║{RESET}")
+    print(f"{AZUL}{NEGRITA}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}")
+    print(f"  {CYAN}📂 Destino de respaldos:{RESET} ./respaldos/ | {CYAN}Compresión:{RESET} ZIP & TAR.GZ")
+    print(f"{AZUL}╠════════════════════════════════════════════════════════════════════════════════════╣{RESET}")
 
 
 def formatear_tamano(nbytes):
@@ -1031,20 +1043,20 @@ def menu_principal():
     while True:
         limpiar_pantalla()
         mostrar_banner()
-        print("    1. Crear respaldo completo (.zip)")
-        print("    2. Crear respaldo completo (.tar.gz)")
-        print("    3. Crear respaldo incremental (.zip)")
-        print("    4. Crear respaldo incremental (.tar.gz)")
-        print("    5. Ver historial de respaldos")
-        print("    6. Verificar integridad de un respaldo")
-        print("    7. Restaurar un respaldo")
-        print("    8. Configurar exclusiones")
-        print("    9. Rotacion de respaldos")
-        print("   10. Interfaz interactiva (Web)")
-        print("    0. Salir")
-        print()
+        print(f"║  {VERDE}[ 1]{RESET} {BLANCO}📦 Crear respaldo completo (.zip){RESET}                                            ║")
+        print(f"║  {VERDE}[ 2]{RESET} {BLANCO}📦 Crear respaldo completo (.tar.gz){RESET}                                         ║")
+        print(f"║  {VERDE}[ 3]{RESET} {BLANCO}⚡ Crear respaldo incremental (.zip) [Solo archivos nuevos o modificados]{RESET}     ║")
+        print(f"║  {VERDE}[ 4]{RESET} {BLANCO}⚡ Crear respaldo incremental (.tar.gz){RESET}                                      ║")
+        print(f"║  {CYAN}[ 5]{RESET} {BLANCO}📜 Ver historial y árbol cronológico de respaldos{RESET}                            ║")
+        print(f"║  {CYAN}[ 6]{RESET} {BLANCO}🛡️  Verificar integridad SHA-256 de un respaldo{RESET}                               ║")
+        print(f"║  {AMARILLO}[ 7]{RESET} {BLANCO}↩️  Restaurar un respaldo a una carpeta destino{RESET}                               ║")
+        print(f"║  {CYAN}[ 8]{RESET} {BLANCO}⚙️  Configurar patrones de exclusión (.git, pycache, etc.){RESET}                  ║")
+        print(f"║  {AMARILLO}[ 9]{RESET} {BLANCO}🔄 Rotación de respaldos (mantener los N más recientes){RESET}                     ║")
+        print(f"║  {MAGENTA}[10]{RESET} {BLANCO}🌐 Iniciar Interfaz Gráfica Web (Streamlit){RESET}                                  ║")
+        print(f"║  {ROJO}[ 0]{RESET} {BLANCO}🚪 Salir del programa{RESET}                                                       ║")
+        print(f"{AZUL}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}\n")
 
-        opcion = input("    Seleccione una opcion: ").strip()
+        opcion = input(f"    {VERDE}{NEGRITA}Seleccione una opción (0-10): {RESET}").strip()
 
         if opcion == "1":
             ejecutar_respaldo("zip", "full")

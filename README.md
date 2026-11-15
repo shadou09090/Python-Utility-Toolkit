@@ -11,6 +11,12 @@ Cada herramienta cuenta con una terminal interactiva de consola con menús de op
 ```text
 Programas_utiles/
 ├── ciberseguridad/
+│   ├── Desbloqueador_pdf_excel/
+│   │   ├── por_desbloquear/                   # Carpeta para depositar PDFs o Excels protegidos
+│   │   ├── Contraseñas/                       # Diccionarios de claves (ej. rockyou.txt)
+│   │   ├── crakeados/                         # Carpeta donde se guardan los archivos desbloqueados
+│   │   ├── historial/                         # Registro histórico en formato JSON Lines (historial.jsonl)
+│   │   └── Buscador.py                        # Desbloqueador por fuerza bruta acelerado por GPU y CPU
 │   ├── Puertos/
 │   │   ├── ruta_a_escanear                    # Archivo auxiliar de objetivo para escaneo
 │   │   └── SpectraScan.py                     # Escáner de red, puertos y auditoría web
@@ -19,7 +25,7 @@ Programas_utiles/
 │   │   └── encriptador.py                     # Cifrador de PDF, Excel y CSV (AES-256 / Fernet + Web UI)
 │   ├── Cifrador_de_mensajes.py                # Cifrado y descifrado simétrico por XOR
 │   ├── Hash_fuerza_bruta.py                   # Cracker de hashes SHA-256 por diccionario
-│   └── limpiador_de_metadatos.py              # Extractor y sanitizador de metadatos EXIF (GPS, cámara)
+│   └── metadatos.py                           # Extractor, inyector y sanitizador de metadatos EXIF/Info (GPS, cámara, autor)
 ├── Kit_herramientas/
 │   ├── Auditor_procesos_puertos/
 │   │   ├── reportes/                          # Carpeta donde se generan reportes JSON
@@ -31,12 +37,6 @@ Programas_utiles/
 │   │   ├── tablas_entrada/                    # Carpeta para colocar archivos CSV, Excel o PDF a leer
 │   │   ├── tablas_generadas/                  # Carpeta donde se generan las tablas LaTeX y Markdown
 │   │   └── Convertidor_tablas.py              # Conversor de tablas a LaTeX y Markdown
-│   ├── Desbloqueador_pdf_excel/
-│   │   ├── por_desbloquear/                   # Carpeta para depositar PDFs o Excels protegidos
-│   │   ├── Contraseñas/                       # Diccionarios de claves (ej. rockyou.txt)
-│   │   ├── crakeados/                         # Carpeta donde se guardan los archivos desbloqueados
-│   │   ├── historial/                         # Registro histórico en formato JSON Lines (historial.jsonl)
-│   │   └── Buscador.py                        # Desbloqueador por fuerza bruta acelerado por GPU y CPU
 │   ├── Descargar_video_YT/
 │   │   ├── videos_descargado/                 # Carpeta de salida de descargas
 │   │   └── Descargar_videos_youtube.py        # Descarga de videos individuales y playlists de YouTube
@@ -57,11 +57,43 @@ Programas_utiles/
 │   └── smart_organizer.py                     # Organizador inteligente de directorios (CLI y Web UI)
 ├── Programas_para_curiosidad/
 │   └── Simulador_de_vida_cow.py               # Autómata celular del Juego de la Vida de Conway
+├── main.py                                    # 🚀 Centro de control y lanzador interactivo unificado
 ├── requirements.txt                           # Lista estructurada de dependencias externas
 ├── instalar_dependencias.py                   # Menú interactivo para instalar dependencias selectivas o totales
 ├── LICENSE                                    # Licencia del proyecto
 └── README.md                                  # Documentación completa y guía de uso
 ```
+
+---
+
+## 🚀 Centro de Control Unificado (`main.py`)
+
+El repositorio incluye un archivo principal interactivo (`main.py`) diseñado como el punto de entrada unificado para **probar, buscar, diagnosticar y ejecutar cualquiera de las herramientas** desde un único lugar, tanto en **terminal de comandos (CLI)** como mediante un **panel gráfico interactivo en Streamlit**:
+
+```bash
+# Iniciar en Consola Interactiva (CLI):
+python main.py
+
+# Iniciar en Interfaz Gráfica Web (Streamlit):
+python main.py web
+# o directamente:
+streamlit run main.py
+```
+
+### ✨ Características Principales:
+- 🧭 **Menú Categórico Interactivo:** Acceso directo con un solo número a cualquiera de las 18 herramientas del proyecto.
+- 🌐 **Panel Gráfico Web (Streamlit):** Dashboard interactivo con métricas, tarjetas visuales de cada herramienta, lanzamiento con un clic y visualización en tiempo real.
+- 🔍 **Buscador Inteligente (`B`):** Encuentra herramientas al instante por palabra clave (ej. `pdf`, `qr`, `red`, `video`, `wifi`, `cifrar`).
+- 🩺 **Diagnóstico de Salud (`D` o `python main.py --check`):** Comprueba automáticamente la integridad de los archivos y qué dependencias están instaladas o faltantes en tu entorno.
+- 🛡️ **Pre-flight Check de Dependencias:** Si seleccionas una herramienta que requiere librerías no instaladas, `main.py` te avisa y te ofrece instalarlas automáticamente con `pip` en ese mismo instante.
+- 🌐 **Soporte Doble Interfaz (CLI / Web):** Para programas con interfaz gráfica en Streamlit (como el Desbloqueador de PDF/Excel, Encriptador o Smart Organizer), permite elegir con un clic si ejecutarlos en terminal de consola o en el navegador web.
+- ⚡ **Atajos por Línea de Comandos:**
+  ```bash
+  python main.py --list          # Lista rápida de todos los programas disponibles
+  python main.py --check         # Ejecuta el diagnóstico del repositorio
+  python main.py 1               # Ejecuta directamente la herramienta #1 (Metadatos)
+  python main.py metadatos       # Ejecuta por coincidencia de nombre
+  ```
 
 ---
 
@@ -77,9 +109,10 @@ Ejecuta el script de instalación en la terminal:
 python instalar_dependencias.py
 ```
 
-Al iniciarse, se desplegará un menú interactivo:
-- **Opción `[ 1]`**: Instala **todas** las dependencias de todos los programas del repositorio.
-- **Opciones `[ 2]` a `[15]`**: Permite seleccionar un programa específico e instalar **únicamente** las librerías necesarias para él, evitando descargas innecesarias.
+Al iniciarse, se desplegará un menú interactivo con detección de estado en tiempo real:
+- **Opción `[ F]`**: Detecta qué paquetes faltan en tu entorno Python activo e instala **únicamente las dependencias faltantes**, ahorrando tiempo.
+- **Opción `[ 1]`**: Verifica y reinstala o actualiza **todas** las dependencias de todos los programas del repositorio.
+- **Opciones `[ 2]` a `[15]`**: Muestran el estado de instalación de cada programa (`[✓ Instalado]` o `[✗ Falta]`) y permiten instalar selectivamente sus librerías.
 - **Opciones `[16]` a `[19]`**: Programas que funcionan al 100% con la **biblioteca estándar de Python** sin requerir ninguna descarga externa.
 
 ### Opción 2: Instalación Tradicional con Pip
@@ -99,7 +132,7 @@ pip install -r requirements.txt
 ### 🛡️ Ciberseguridad y Auditoría
 
 #### 1. Desbloqueador de PDF y Excel (Acelerado por GPU y CPU Multi-núcleo)
-* **Archivo:** [`Kit_herramientas/Desbloqueador_pdf_excel/Buscador.py`](Kit_herramientas/Desbloqueador_pdf_excel/Buscador.py)
+* **Archivo:** [`ciberseguridad/Desbloqueador_pdf_excel/Buscador.py`](ciberseguridad/Desbloqueador_pdf_excel/Buscador.py)
 * **Carpetas del programa:**
   - 📥 **Lectura:** `por_desbloquear/` (donde colocas los PDFs o Excels protegidos) y `Contraseñas/` (diccionarios como `rockyou.txt` o listas de contraseñas en `.txt`).
   - 📤 **Generación:** `crakeados/` (donde se guarda el documento descifrado y, opcionalmente, el archivo `.password.txt` con la clave encontrada).
@@ -116,18 +149,18 @@ pip install -r requirements.txt
 * **Ejecución en consola (CLI):**
   ```bash
   # Menú interactivo
-  python Kit_herramientas/Desbloqueador_pdf_excel/Buscador.py
+  python ciberseguridad/Desbloqueador_pdf_excel/Buscador.py
 
   # Iniciar interfaz interactiva Web (Streamlit)
-  python Kit_herramientas/Desbloqueador_pdf_excel/Buscador.py web
+  python ciberseguridad/Desbloqueador_pdf_excel/Buscador.py web
   # o directamente:
-  streamlit run Kit_herramientas/Desbloqueador_pdf_excel/Buscador.py
+  streamlit run ciberseguridad/Desbloqueador_pdf_excel/Buscador.py
 
   # Medir rendimiento GPU vs CPU
-  python Kit_herramientas/Desbloqueador_pdf_excel/Buscador.py benchmark
+  python ciberseguridad/Desbloqueador_pdf_excel/Buscador.py benchmark
 
   # Desbloquear por línea de comandos
-  python Kit_herramientas/Desbloqueador_pdf_excel/Buscador.py unlock --file "por_desbloquear/documento.pdf" --password-file "Contraseñas/rockyou.txt" --record-password
+  python ciberseguridad/Desbloqueador_pdf_excel/Buscador.py unlock --file "por_desbloquear/documento.pdf" --password-file "Contraseñas/rockyou.txt" --record-password
   ```
 
 ---
@@ -172,14 +205,24 @@ pip install -r requirements.txt
 
 ---
 
-#### 4. Extractor y Limpiador de Metadatos EXIF
-* **Archivo:** [`ciberseguridad/limpiador_de_metadatos.py`](ciberseguridad/limpiador_de_metadatos.py)
-* **Dependencias:** `Pillow`
+#### 4. Gestor, Inyector y Limpiador de Metadatos EXIF
+* **Archivo:** [`ciberseguridad/metadatos.py`](ciberseguridad/metadatos.py)
+* **Dependencias:** `Pillow` (opcional: `streamlit` para Web UI)
 * **¿Qué hace?**  
-  Inspecciona los metadatos EXIF incrustados en fotografías digitales. Extrae fabricante y modelo de cámara, fecha y hora de captura, y coordenadas GPS (generando un enlace directo a Google Maps). Cuenta con una función de sanitización que crea una copia de la imagen reconstruyendo únicamente la matriz de píxeles, eliminando cualquier rastro de metadatos para evitar doxxing.
+  Herramienta integral para auditar, inyectar y sanitizar metadatos en imágenes digitales de cualquier formato (JPEG, PNG, WEBP, TIFF, etc.):
+  - **Inspección Sensible:** Extrae fabricante y modelo de cámara, software de edición, autor/artista, derechos de autor, fecha de captura y coordenadas GPS (generando un enlace directo a Google Maps y mapa interactivo en Web UI).
+  - **Inyección y Edición de Metadatos:** Permite añadir o modificar metadatos completos en cualquier tipo de imagen: marca, modelo, software, autor, copyright, descripción, fecha/hora (con preset de hora actual), coordenadas GPS con conversión automática de grados decimales a DMS racionales y etiquetas personalizadas libres.
+  - **Sanitización de Privacidad:** Crea una copia limpia de la imagen reconstruyendo únicamente la matriz de píxeles, eliminando cualquier rastro de metadatos para evitar doxxing.
+  - **Doble Interfaz:** Disponible tanto en consola interactiva como mediante panel gráfico web en **Streamlit** con carga visual de imágenes, mapas interactivos y descarga directa.
 * **Ejecución:**
   ```bash
-  python ciberseguridad/limpiador_de_metadatos.py
+  # Menú interactivo en consola (CLI)
+  python ciberseguridad/metadatos.py
+
+  # Iniciar interfaz gráfica Web (Streamlit)
+  python ciberseguridad/metadatos.py web
+  # o directamente:
+  streamlit run ciberseguridad/metadatos.py
   ```
 
 ---
@@ -287,7 +330,7 @@ pip install -r requirements.txt
 * **Archivo:** [`Kit_herramientas/Juntador_pdf/Juntador_pdfs.py`](Kit_herramientas/Juntador_pdf/Juntador_pdfs.py)
 * **Dependencias:** `pypdf`
 * **¿Qué hace?**  
-  Escanea todos los archivos PDF presentes en su directorio, los ordena secuencialmente y los fusiona página por página en un único documento maestro de salida (`power_BI.pdf`).
+  Escanea los archivos PDF presentes en el directorio seleccionado, los lista con su tamaño y páginas, y los fusiona en un único documento maestro de salida con nombre personalizable y apertura automática.
 * **Ejecución:**
   ```bash
   python Kit_herramientas/Juntador_pdf/Juntador_pdfs.py
@@ -298,22 +341,32 @@ pip install -r requirements.txt
 #### 13. Descargador de Videos y Playlists de YouTube
 * **Archivo:** [`Kit_herramientas/Descargar_video_YT/Descargar_videos_youtube.py`](Kit_herramientas/Descargar_video_YT/Descargar_videos_youtube.py)
 * **Carpetas del programa:**
-  - 📤 **Generación:** `videos_descargado/`
-* **Dependencias:** `yt-dlp`, `imageio-ffmpeg`
+  - 📤 **Generación:** `videos_descargado/` (o ruta personalizada configurable)
+* **Dependencias:** `yt-dlp`, `imageio-ffmpeg` (opcional: `streamlit` para Web UI)
 * **¿Qué hace?**  
-  Descarga videos individuales o listas de reproducción completas de YouTube en la máxima resolución y audio integrados en formato `.mp4`. Detecta instalaciones locales de `ffmpeg` y motores de JavaScript para eludir restricciones.
+  Herramienta avanzada para descargar y gestionar videos y pistas de audio de YouTube:
+  - **Múltiples formatos:** Descarga en MP4 (máxima calidad, 1080p, 720p, 480p), WebM, MP3 (320 kbps), M4A y WAV sin pérdida.
+  - **Gestión de rutas:** Permite cambiar la carpeta de descarga a cualquier directorio del sistema y restaurar la predeterminada con un solo comando.
+  - **Biblioteca y Reproductor:** Lista los archivos descargados y permite reproducirlos directamente tanto en el reproductor del sistema como en la interfaz web.
+  - **Doble Interfaz:** Menú decorado en terminal (CLI) y panel gráfico web interactivo en **Streamlit**.
 * **Ejecución:**
   ```bash
+  # Menú interactivo en terminal (CLI)
   python Kit_herramientas/Descargar_video_YT/Descargar_videos_youtube.py
+
+  # Iniciar interfaz gráfica Web (Streamlit)
+  python Kit_herramientas/Descargar_video_YT/Descargar_videos_youtube.py web
+  # o directamente:
+  streamlit run Kit_herramientas/Descargar_video_YT/Descargar_videos_youtube.py
   ```
 
 ---
 
-#### 14. Generador de Códigos QR por Enlace
+#### 14. Generador de Códigos QR Personalizados
 * **Archivo:** [`Kit_herramientas/Generador_QR/Generador_de_QR_por_link.py`](Kit_herramientas/Generador_QR/Generador_de_QR_por_link.py)
 * **Dependencias:** `qrcode`, `Pillow`
 * **¿Qué hace?**  
-  Genera imágenes PNG de códigos QR de alta resolución a partir de cualquier enlace web o texto, con corrección de errores y colores personalizables.
+  Genera imágenes PNG de códigos QR a partir de cualquier enlace web o texto, con paletas de color estilizadas (Negro/Blanco, Ámbar dorado, Azul tecnológico, Verde Matrix/Hacker, Púrpura neón o códigos Hex personalizados) y previsualización automática.
 * **Ejecución:**
   ```bash
   python Kit_herramientas/Generador_QR/Generador_de_QR_por_link.py
@@ -325,7 +378,7 @@ pip install -r requirements.txt
 * **Archivo:** [`Kit_herramientas/Genera_y_poner_audio_por_texto.py`](Kit_herramientas/Genera_y_poner_audio_por_texto.py)
 * **Dependencias:** `gTTS`
 * **¿Qué hace?**  
-  Transforma texto escrito en español a voz sintetizada natural mediante la API de Google TTS, genera un archivo `.mp3` con marca de tiempo y lo reproduce automáticamente.
+  Transforma texto escrito directo o archivos `.txt` completos a voz sintetizada natural mediante la API de Google TTS, soporta múltiples idiomas y dialectos (Español, Inglés, Francés, Alemán, etc.), genera archivos `.mp3` con marca de tiempo y permite su reproducción inmediata.
 * **Ejecución:**
   ```bash
   python Kit_herramientas/Genera_y_poner_audio_por_texto.py
@@ -368,7 +421,7 @@ pip install -r requirements.txt
 * **Archivo:** [`Programas_para_curiosidad/Simulador_de_vida_cow.py`](Programas_para_curiosidad/Simulador_de_vida_cow.py)
 * **Dependencias:** Ninguna (Biblioteca estándar de Python).
 * **¿Qué hace?**  
-  Implementación en consola del autómata celular de John Conway sobre una cuadrícula bidimensional animada en tiempo real según las cuatro reglas clásicas de subpoblación, supervivencia y reproducción celular.
+  Implementación en consola del autómata celular de John Conway sobre una cuadrícula bidimensional animada en tiempo real. Cuenta con menú interactivo para seleccionar patrones clásicos (sopa primordial aleatoria, nave Planeador / Glider, oscilador Pulsar y cañón de planeadores de Gosper) junto a un HUD en vivo con métricas de generaciones y células vivas.
 * **Ejecución:**
   ```bash
   python Programas_para_curiosidad/Simulador_de_vida_cow.py
@@ -380,14 +433,14 @@ pip install -r requirements.txt
 
 | # | Programa | Ubicación | Dependencias Externas |
 | :-: | :--- | :--- | :--- |
-| **1** | **Desbloqueador de PDF y Excel (GPU & CPU)** | `Kit_herramientas/Desbloqueador_pdf_excel/Buscador.py` | `pypdf`, `pycryptodome`, `msoffcrypto-tool`, `streamlit` |
+| **1** | **Desbloqueador de PDF y Excel (GPU & CPU)** | `ciberseguridad/Desbloqueador_pdf_excel/Buscador.py` | `pypdf`, `pycryptodome`, `msoffcrypto-tool`, `streamlit` |
 | **2** | **Encriptador de Archivos (PDF, Excel, CSV)** | `ciberseguridad/encriptador/encriptador.py` | `pypdf`, `msoffcrypto-tool`, `cryptography`, `streamlit` |
 | **3** | **Convertidor de Tablas** | `Kit_herramientas/Convertidor_tablas/...` | `pandas`, `openpyxl`, `pymupdf`, `tabulate`, `streamlit` |
 | **4** | **Auditor de Procesos y Puertos** | `Kit_herramientas/Auditor_procesos_puertos/...` | `psutil`, `pandas`, `altair`, `streamlit` |
 | **5** | **Respaldos Incrementales** | `Kit_herramientas/Respaldos_incrementales/...` | `streamlit` |
 | **6** | **Monitor de Latencia (Ping Logger)** | `Kit_herramientas/Ping_Logger/...` | `pandas`, `streamlit` |
-| **7** | **Descargador de Videos YouTube** | `Kit_herramientas/Descargar_video_YT/...` | `yt-dlp`, `imageio-ffmpeg` |
-| **8** | **Limpiador de Metadatos EXIF** | `ciberseguridad/limpiador_de_metadatos.py` | `Pillow` |
+| **7** | **Descargador de Videos YouTube** | `Kit_herramientas/Descargar_video_YT/...` | `yt-dlp`, `imageio-ffmpeg`, `streamlit` |
+| **8** | **Gestor de Metadatos EXIF (Extractor / Inyector / Limpiador)** | `ciberseguridad/metadatos.py` | `Pillow`, `streamlit` |
 | **9** | **Escritor de Mensajes (Auto-Typer Kernel C-Speed)** | `Kit_herramientas/Escribir_mensajes.py` | `keyboard` |
 | **10** | **Generador de Códigos QR** | `Kit_herramientas/Generador_QR/...` | `qrcode`, `Pillow` |
 | **11** | **Generador de Audio (TTS)** | `Kit_herramientas/Genera_y_poner_audio_por_texto.py` | `gTTS` |

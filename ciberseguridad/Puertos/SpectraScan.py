@@ -1,3 +1,5 @@
+import os
+import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict, dataclass
 from datetime import datetime
@@ -9,6 +11,19 @@ import time
 from typing import Dict, List
 import urllib.error
 import urllib.request
+
+if os.name == "nt":
+    os.system("")
+
+CYAN = "\033[96m"
+VERDE = "\033[92m"
+AMARILLO = "\033[93m"
+ROJO = "\033[91m"
+MAGENTA = "\033[95m"
+AZUL = "\033[94m"
+BLANCO = "\033[97m"
+NEGRITA = "\033[1m"
+RESET = "\033[0m"
 
 ARCHIVO_RUTA = "ruta_a_escanear.txt"
 
@@ -324,24 +339,24 @@ def ejecutar_escaneo(
     resultados.sort(key=lambda x: x.puerto)
 
     print(
-        f"{'PUERTO':<9} {'ESTADO':<10} {'SERVICIO':<14} {'LATENCIA':<12} {'BANNER / INFO'}"
+        f"  {BLANCO}{NEGRITA}{'PUERTO':<9} {'ESTADO':<12} {'SERVICIO':<14} {'LATENCIA':<12} {'BANNER / INFO'}{RESET}"
     )
-    print("-" * 85)
+    print(f"  {AZUL}{'─' * 80}{RESET}")
     abiertos = 0
     for r in resultados:
         if r.estado == "ABIERTO":
             abiertos += 1
             print(
-                f"{r.puerto:<9} {'ABIERTO':<10} {r.servicio:<14} {f'{r.latencia_ms} ms':<12} {r.banner}"
+                f"  {BLANCO}{r.puerto:<9}{RESET} {VERDE}{NEGRITA}{'ABIERTO':<12}{RESET} {CYAN}{r.servicio:<14}{RESET} {AMARILLO}{f'{r.latencia_ms} ms':<12}{RESET} {BLANCO}{r.banner}{RESET}"
             )
         elif mostrar_cerrados:
             print(
-                f"{r.puerto:<9} {'CERRADO':<10} {r.servicio:<14} {f'{r.latencia_ms} ms':<12} -"
+                f"  {BLANCO}{r.puerto:<9}{RESET} {ROJO}{'CERRADO':<12}{RESET} {BLANCO}{r.servicio:<14}{RESET} {BLANCO}{f'{r.latencia_ms} ms':<12}{RESET} -"
             )
 
-    print("-" * 85)
+    print(f"  {AZUL}{'─' * 80}{RESET}")
     print(
-        f"[✓] Escaneo finalizado en {tiempo_total}s | Abiertos: {abiertos} | Cerrados/Filtrados: {len(puertos) - abiertos}"
+        f"  {VERDE}{NEGRITA}[✓] Escaneo finalizado en {tiempo_total}s{RESET} | {VERDE}Abiertos: {abiertos}{RESET} | {ROJO}Cerrados/Filtrados: {len(puertos) - abiertos}{RESET}"
     )
 
     return {
@@ -358,9 +373,10 @@ def ejecutar_escaneo(
 
 
 def imprimir_seccion(titulo: str, datos: Dict[str, str]):
-    print(f"\n[*] {titulo}:")
+    print(f"\n{CYAN}{NEGRITA}╔══ {titulo} ══{RESET}")
     for k, v in datos.items():
-        print(f"    • {k:<30}: {v}")
+        print(f"  {MAGENTA}•{RESET} {BLANCO}{k:<30}:{RESET} {VERDE}{v}{RESET}")
+    print(f"{CYAN}{'═' * 65}{RESET}")
 
 
 def menu_principal():
@@ -368,23 +384,25 @@ def menu_principal():
     ultimo_reporte = None
 
     while True:
-        print("\n" + "=" * 72)
-        print(f" NETRECON v3.0 | Archivo: {ARCHIVO_RUTA} | Objetivo: {objetivo_actual}")
-        print("=" * 72)
-        print(" 1) Escaneo Rápido (Puertos críticos de infraestructura)")
-        print(" 2) Escaneo Web & Desarrollo (80, 443, 3000, 5173, 8080...)")
-        print(" 3) Escaneo de Bases de Datos (MySQL, PostgreSQL, Oracle, Mongo...)")
-        print(" 4) Escaneo Personalizado (ej. 20-100, 443, 8000-8100)")
-        print(" 5) Auditoría TLS/SSL y Cabeceras de Seguridad HTTP")
-        print(" 6) Auditoría de Cookies, CORS, Redirección HTTPS y Métodos HTTP")
-        print(" 7) Verificar archivos públicos (robots.txt, security.txt, sitemap.xml)")
-        print(" 8) Ejecutar Auditoría Completa (Red + TLS + Web + Gobernanza)")
-        print(" 9) Recargar o actualizar objetivo en ruta_a_escanear.txt")
-        print(" 10) Exportar último reporte a JSON")
-        print(" 0) Salir")
-        print("=" * 72)
+        print(f"\n{AZUL}{NEGRITA}╔════════════════════════════════════════════════════════════════════════════════════╗{RESET}")
+        print(f"{AZUL}{NEGRITA}║         🌐 SPECTRA SCAN & NETRECON v3.0 (AUDITOR DE RED Y SERVICIOS WEB)           ║{RESET}")
+        print(f"{AZUL}{NEGRITA}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}")
+        print(f"  {CYAN}🎯 Objetivo activo:{RESET} {VERDE}{NEGRITA}{objetivo_actual}{RESET} | {CYAN}📁 Archivo:{RESET} {BLANCO}{ARCHIVO_RUTA}{RESET}")
+        print(f"{AZUL}╠════════════════════════════════════════════════════════════════════════════════════╣{RESET}")
+        print(f"║  {VERDE}[ 1]{RESET} {BLANCO}⚡ Escaneo Rápido (Puertos críticos de infraestructura){RESET}             ║")
+        print(f"║  {VERDE}[ 2]{RESET} {BLANCO}🌐 Escaneo Web & Desarrollo (80, 443, 3000, 5173, 8080...){RESET}           ║")
+        print(f"║  {VERDE}[ 3]{RESET} {BLANCO}🗄️  Escaneo Bases de Datos (MySQL, Postgres, Mongo, Redis...){RESET}        ║")
+        print(f"║  {CYAN}[ 4]{RESET} {BLANCO}🎯 Escaneo Personalizado (ej. 20-100, 443, 8000-8100){RESET}               ║")
+        print(f"║  {MAGENTA}[ 5]{RESET} {BLANCO}🔒 Auditoría TLS/SSL y Cabeceras de Seguridad HTTP{RESET}                  ║")
+        print(f"║  {MAGENTA}[ 6]{RESET} {BLANCO}🍪 Auditoría de Cookies, CORS, Métodos y Redirecciones{RESET}             ║")
+        print(f"║  {MAGENTA}[ 7]{RESET} {BLANCO}📜 Archivos de Gobernanza (robots.txt, security.txt, sitemap){RESET}       ║")
+        print(f"║  {AMARILLO}[ 8]{RESET} {BLANCO}🛡️  Auditoría Integral Completa (Todos los módulos){RESET}                  ║")
+        print(f"║  {CYAN}[ 9]{RESET} {BLANCO}⚙️  Cambiar / Recargar objetivo (ruta_a_escanear.txt){RESET}                  ║")
+        print(f"║  {VERDE}[10]{RESET} {BLANCO}💾 Exportar último reporte de auditoría a JSON{RESET}                       ║")
+        print(f"║  {ROJO}[ 0]{RESET} {BLANCO}🚪 Salir del programa{RESET}                                                 ║")
+        print(f"{AZUL}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}\n")
 
-        opcion = input("Seleccione una acción: ").strip()
+        opcion = input(f"{VERDE}{NEGRITA}Seleccione una acción (0-10): {RESET}").strip()
 
         if opcion in ("1", "2", "3"):
             mostrar_c = (

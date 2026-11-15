@@ -10,6 +10,19 @@ import re
 import subprocess
 from pathlib import Path
 
+if os.name == "nt":
+    os.system("")
+
+CYAN = "\033[96m"
+VERDE = "\033[92m"
+AMARILLO = "\033[93m"
+ROJO = "\033[91m"
+MAGENTA = "\033[95m"
+AZUL = "\033[94m"
+BLANCO = "\033[97m"
+NEGRITA = "\033[1m"
+RESET = "\033[0m"
+
 try:
     import pandas as pd
 except ImportError:
@@ -453,32 +466,28 @@ def interfaz_web():
 # ---------------------------------------------------------------------------
 # Menu principal CLI
 # ---------------------------------------------------------------------------
-BANNER = r"""
-  ============================================
-       CONVERTIDOR DE TABLAS
-       CSV / Excel / PDF -> LaTeX / Markdown
-  ============================================
-"""
-
-
 def menu_principal():
     _asegurar_directorios()
     while True:
         limpiar_pantalla()
-        print(BANNER)
-        print("  [1] Convertir CSV a LaTeX")
-        print("  [2] Convertir CSV a Markdown")
-        print("  [3] Convertir Excel (.xlsx) a LaTeX")
-        print("  [4] Convertir Excel (.xlsx) a Markdown")
-        print("  [5] Extraer tablas de un PDF y convertir a LaTeX")
-        print("  [6] Extraer tablas de un PDF y convertir a Markdown")
-        print("  [7] Vista previa de tabla en terminal")
-        print("  [8] Conversion por lotes (todos los archivos)")
-        print("  [9] Interfaz interactiva (Web)")
-        print("  [0] Salir")
-        print()
+        print(f"\n{AZUL}{NEGRITA}╔════════════════════════════════════════════════════════════════════════════════════╗{RESET}")
+        print(f"{AZUL}{NEGRITA}║         📊 CONVERTIDOR DE TABLAS (CSV / EXCEL / PDF -> LATEX & MARKDOWN)           ║{RESET}")
+        print(f"{AZUL}{NEGRITA}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}")
+        print(f"  {CYAN}📁 Entrada:{RESET} tablas_entrada/ | {CYAN}📂 Salida:{RESET} tablas_generadas/")
+        print(f"{AZUL}╠════════════════════════════════════════════════════════════════════════════════════╣{RESET}")
+        print(f"║  {VERDE}[1]{RESET} {BLANCO}📄 Convertir CSV a LaTeX{RESET}                                               ║")
+        print(f"║  {VERDE}[2]{RESET} {BLANCO}📝 Convertir CSV a Markdown{RESET}                                            ║")
+        print(f"║  {VERDE}[3]{RESET} {BLANCO}📊 Convertir Excel (.xlsx) a LaTeX{RESET}                                     ║")
+        print(f"║  {VERDE}[4]{RESET} {BLANCO}📑 Convertir Excel (.xlsx) a Markdown{RESET}                                  ║")
+        print(f"║  {CYAN}[5]{RESET} {BLANCO}📑 Extraer tablas de un PDF y convertir a LaTeX{RESET}                         ║")
+        print(f"║  {CYAN}[6]{RESET} {BLANCO}📋 Extraer tablas de un PDF y convertir a Markdown{RESET}                      ║")
+        print(f"║  {AMARILLO}[7]{RESET} {BLANCO}👀 Vista previa de tabla formateada en la terminal{RESET}                      ║")
+        print(f"║  {MAGENTA}[8]{RESET} {BLANCO}⚡ Conversión por lotes (procesar todos los archivos){RESET}                   ║")
+        print(f"║  {MAGENTA}[9]{RESET} {BLANCO}🌐 Iniciar Interfaz Gráfica Web (Streamlit){RESET}                          ║")
+        print(f"║  {ROJO}[0]{RESET} {BLANCO}🚪 Salir del programa{RESET}                                                 ║")
+        print(f"{AZUL}╚════════════════════════════════════════════════════════════════════════════════════╝{RESET}\n")
 
-        opcion = input("  Selecciona una opcion: ").strip()
+        opcion = input(f"  {VERDE}{NEGRITA}Seleccione una opción (0-9): {RESET}").strip()
 
         if opcion == "1":
             convertir_csv_latex()
